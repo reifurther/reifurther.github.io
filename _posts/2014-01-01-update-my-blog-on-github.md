@@ -12,17 +12,17 @@ description: 快速更新个人blog.
 
 首先需要取下个人blog的repository.
 
-```vim
+\`\`\`vim
 $git clone https://github.com/leipingr/leipingr.github.io.git
-```
+\`\`\`
 
 在 \_posts目录复制一个文件，修改描述信息，编辑完内容，保存。
 
 (个人喜欢用Ulysses.)
 
 ### 本地调试
-\`\`\` ruby
-	$jekyll s
+\`\`\`vim
+$jekyll s
 \`\`\`
 查看效果。
 
@@ -32,7 +32,7 @@ $git clone https://github.com/leipingr/leipingr.github.io.git
 
 ### 提交到github
 
-\`\`\` vim
+\`\`\`vim
 $git add .
 $git commit -m  "some description."
 $git push origin master
