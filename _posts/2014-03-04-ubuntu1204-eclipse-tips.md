@@ -21,7 +21,7 @@ $vi e4_classic_winxp.css
 > **note:**
 Here is a quick hack which doesn't require any plugin installation, instead you just need to add a few lines to your current layout's CSS file. Works perfectly for me in v4.2.2 
 Navigate to \<ECLIPSE\_HOME\>/plugins/org.eclipse.platform\_<VERSION>/css then open up the CSS file of whichever layout you are using, e.g. mine was e4\_default.css. Now append the following snippet to the file:
-```css
+```html
  SearchField {
  visibility:hidden;
  } 

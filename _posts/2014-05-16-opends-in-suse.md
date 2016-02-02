@@ -17,7 +17,7 @@ suse下安装openDS2.2遇到如下问题，供参考。
 解决方法，在/etc/hosts里添加一行：
 
 ```vim
-#127.0.1.1       linux-5tzq
+127.0.1.1       linux-5tzq
 ```
 
 其中linux-5tzq 是安装机的主机名。
@@ -43,6 +43,7 @@ suse下安装openDS2.2遇到如下问题，供参考。
 
 ### 最后解决
 执行：
+
 ```vim
 $getent hosts linux-5tzq
 ```
