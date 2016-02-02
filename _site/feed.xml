@@ -13,12 +13,12 @@
 &lt;h2 id=&quot;section&quot;&gt;安装完后无法启动服务器&lt;/h2&gt;
 
 &lt;p&gt;提示：
-&lt;code&gt;The administration connector self-signed certificate cannot be generated
-&lt;/code&gt;&lt;/p&gt;
+`The administration connector self-signed certificate cannot be generated
+`&lt;/p&gt;
 
 &lt;p&gt;解决方法，在/etc/hosts里添加一行：
-&lt;code&gt;
-127.0.1.1       linux-5tzq
+&lt;code&gt;vim
+#127.0.1.1       linux-5tzq
 &lt;/code&gt;
 其中linux-5tzq 是安装机的主机名。&lt;/p&gt;
 
@@ -34,8 +34,8 @@
 &lt;/ul&gt;
 
 &lt;blockquote&gt;
-  &lt;p&gt;&lt;code&gt;报错信息如下: 
-&lt;/code&gt;将服务器 172.18.64.42:5444 上的注册信息初始化为服务器 172.18.64.39:5444 的内容 ….. 在使用服务器 172.18.64.39:5444 中的内容进行初始化期间出现错误。最新日志详细信息: [30/七月/2012:23:37:17 +0800]severity=”NOTICE” msgCount=0 msgID=9896349 message=”通过副本初始化 任务quicksetup-initialize1 已开始执行”。任务状态: STOPPED_BY_ERROR。有关详细信息，请检查172.18.64.39:5444 的错误日志。请参见 /tmp/opends-replication-6498757972750616075.log 以了解有关此操作的详细日志。&lt;/p&gt;
+  &lt;p&gt;`报错信息如下: 
+`将服务器 172.18.64.42:5444 上的注册信息初始化为服务器 172.18.64.39:5444 的内容 ….. 在使用服务器 172.18.64.39:5444 中的内容进行初始化期间出现错误。最新日志详细信息: [30/七月/2012:23:37:17 +0800]severity=”NOTICE” msgCount=0 msgID=9896349 message=”通过副本初始化 任务quicksetup-initialize1 已开始执行”。任务状态: STOPPED_BY_ERROR。有关详细信息，请检查172.18.64.39:5444 的错误日志。请参见 /tmp/opends-replication-6498757972750616075.log 以了解有关此操作的详细日志。&lt;/p&gt;
 &lt;/blockquote&gt;
 
 &lt;h3 id=&quot;section-2&quot;&gt;初始解决方法&lt;/h3&gt;
@@ -43,18 +43,17 @@
 但还是报错。&lt;/p&gt;
 
 &lt;blockquote&gt;
-  &lt;p&gt;&lt;code&gt;报错信息如下: 
-&lt;/code&gt;在使用服务器 linux-5tzq:5444 中的内容进行初始化期间出现错误。最新日志详细信息: [31/七月/2012:02:26:33 +0800] severity=”NOTICE” msgCount=0 msgID=9896349 message=”通过副本初始化 任务 quicksetup-initialize2 已开始执行”。任务状态: STOPPED_BY_ERROR。有关详细信息，请检查linux-5tzq:5444 的错误日志。&lt;/p&gt;
+  &lt;p&gt;`报错信息如下: 
+`在使用服务器 linux-5tzq:5444 中的内容进行初始化期间出现错误。最新日志详细信息: [31/七月/2012:02:26:33 +0800] severity=”NOTICE” msgCount=0 msgID=9896349 message=”通过副本初始化 任务 quicksetup-initialize2 已开始执行”。任务状态: STOPPED_BY_ERROR。有关详细信息，请检查linux-5tzq:5444 的错误日志。&lt;/p&gt;
 &lt;/blockquote&gt;
 
 &lt;h3 id=&quot;section-3&quot;&gt;最后解决&lt;/h3&gt;
 &lt;p&gt;执行：
-&lt;code&gt;
+&lt;code&gt;vim
 $getent hosts linux-5tzq
 &lt;/code&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;code&gt;发现 两台主机ip均一致，为127.0.1.1 ，显然错误。 
-&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;发现 两台主机ip均一致，为127.0.1.1 ，显然错误。&lt;/p&gt;
 
 &lt;p&gt;把172.18.64.42的主机ip地址更改为 127.0.1.2, 配置双向复制成功。&lt;/p&gt;
 </description>
@@ -72,24 +71,24 @@ $getent hosts linux-5tzq
 
 &lt;p&gt;如果不太使用quick access, 也觉得很占显示地方，可以隐藏掉它．
 编辑 /opt/eclipse/plugins/org.eclipse.platform_4.2.2.v201302041200/css,
-&lt;code&gt;ruby
-    vi e4\_classic\_winxp.css 
-&lt;/code&gt;&lt;/p&gt;
+```vim
+$vi e4_classic_winxp.css 
+```&lt;/p&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;&lt;strong&gt;note:&lt;/strong&gt;
 Here is a quick hack which doesn’t require any plugin installation, instead you just need to add a few lines to your current layout’s CSS file. Works perfectly for me in v4.2.2 
 Navigate to &amp;lt;ECLIPSE_HOME&amp;gt;/plugins/org.eclipse.platform_&lt;version&gt;/css then open up the CSS file of whichever layout you are using, e.g. mine was e4\_default.css. Now append the following snippet to the file:
-```
-#SearchField {
-	    visibility:hidden;
-	} 
-```
+\`\`\`css
+ SearchField {
+ visibility:hidden;
+ } 
+\`\`\`
 Now just restart Eclipse and the box is gone.&lt;/version&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;&lt;code&gt;Attn: 我使用的是juno (ubuntu 12.04) ，编辑e4\_classic\_winxp.css (很奇怪)
-&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;`Attn: 我使用的是juno (ubuntu 12.04) ，编辑e4_classic_winxp.css (很奇怪)
+`&lt;/p&gt;
 
 &lt;h3 id=&quot;section&quot;&gt;显示代码很好的字体&lt;/h3&gt;
 
@@ -128,18 +127,18 @@ choose a different one 这时候就会提示你更改workspace的目录了。&lt
 
 &lt;p&gt;首先需要取下个人blog的repository.&lt;/p&gt;
 
-&lt;p&gt;&lt;code&gt;ruby
-`$git clone https://github.com/leipingr/leipingr.github.io.git
-&lt;/code&gt;
-`
-在 _posts目录复制一个文件，修改描述信息，编辑完内容，保存。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;vim
+$git clone https://github.com/leipingr/leipingr.github.io.git
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;在 _posts目录复制一个文件，修改描述信息，编辑完内容，保存。&lt;/p&gt;
 
 &lt;p&gt;(个人喜欢用Ulysses.)&lt;/p&gt;
 
 &lt;h3 id=&quot;section&quot;&gt;本地调试&lt;/h3&gt;
-&lt;p&gt;``` ruby
-	$jekyll s
-```
+&lt;p&gt;&lt;code&gt;vim
+$jekyll s
+&lt;/code&gt;
 查看效果。&lt;/p&gt;
 
 &lt;blockquote&gt;
@@ -149,11 +148,11 @@ choose a different one 这时候就会提示你更改workspace的目录了。&lt
 
 &lt;h3 id=&quot;github&quot;&gt;提交到github&lt;/h3&gt;
 
-&lt;p&gt;``` vim
+&lt;p&gt;&lt;code&gt;vim
 $git add .
-$git commit -m  “some description.”
+$git commit -m  &quot;some description.&quot;
 $git push origin master
-```&lt;/p&gt;
+&lt;/code&gt;&lt;/p&gt;
 
 &lt;p&gt;结束。&lt;/p&gt;
 </description>

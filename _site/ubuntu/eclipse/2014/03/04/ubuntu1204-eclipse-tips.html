@@ -178,24 +178,24 @@
 
 <p>如果不太使用quick access, 也觉得很占显示地方，可以隐藏掉它．
 编辑 /opt/eclipse/plugins/org.eclipse.platform_4.2.2.v201302041200/css,
-<code>ruby
-    vi e4\_classic\_winxp.css 
-</code></p>
+```vim
+$vi e4_classic_winxp.css 
+```</p>
 
 <blockquote>
   <p><strong>note:</strong>
 Here is a quick hack which doesn’t require any plugin installation, instead you just need to add a few lines to your current layout’s CSS file. Works perfectly for me in v4.2.2 
 Navigate to &lt;ECLIPSE_HOME&gt;/plugins/org.eclipse.platform_<version>/css then open up the CSS file of whichever layout you are using, e.g. mine was e4\_default.css. Now append the following snippet to the file:
-```
-#SearchField {
-	    visibility:hidden;
-	} 
-```
+\`\`\`css
+ SearchField {
+ visibility:hidden;
+ } 
+\`\`\`
 Now just restart Eclipse and the box is gone.</version></p>
 </blockquote>
 
-<p><code>Attn: 我使用的是juno (ubuntu 12.04) ，编辑e4\_classic\_winxp.css (很奇怪)
-</code></p>
+<p>`Attn: 我使用的是juno (ubuntu 12.04) ，编辑e4_classic_winxp.css (很奇怪)
+`</p>
 
 <h3 id="section">显示代码很好的字体</h3>
 
