@@ -1,0 +1,33 @@
+# visit https://github.com/mojombo/jekyll/wiki/Configuration for more settings
+
+paginate: 10 # pagination based on number of posts
+paginate_path: "page:num"
+exclude: ["README.md"] # files to exclude
+highlighter: pygments
+markdown: kramdown
+disqus: reifurther
+google_analytics: reifurther
+
+defaults:
+  -
+    scope:
+      path: "" # empty string for all files
+    values:
+      title: reifurther
+
+description: My private blog.
+author:
+  name: reifurther
+  email: reifurther@outlook.com
+  github: leipingr
+  twitter: reifurther
+  pinterest: reifurther
+  linkedin: reifurther
+  bio: my live, my love!
+  email_md5: 
+
+rss_path: feed.xml
+categories_path: categories.html
+tags_path: tags.html
+
+BASE_PATH:

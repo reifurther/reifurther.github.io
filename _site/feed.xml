@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title></title>
+		<description>My private blog.</description>
+		<link>/</link>
+		<atom:link href="/feed.xml" rel="self" type="application/rss+xml" />
+		
+			<item>
+				<title>suse下安装openDS遇到的问题</title>
+				<description>&lt;p&gt;suse下安装openDS2.2遇到如下问题，供参考。&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;安装完后无法启动服务器&lt;/h2&gt;
+
+&lt;p&gt;提示：
+&lt;code&gt;The administration connector self-signed certificate cannot be generated
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;解决方法，在/etc/hosts里添加一行：&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;mi&quot;&gt;127&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;       &lt;span class=&quot;n&quot;&gt;linux&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tzq&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;其中linux-5tzq 是安装机的主机名。&lt;/p&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;双向复制数据不能同步问题&lt;/h2&gt;
+
+&lt;p&gt;在两台主机间作双向复制:  172.18.64.42:5444 &lt;strong&gt;&amp;lt;-&amp;gt;&lt;/strong&gt; 172.18.64.39:5444  , 
+此时并未配置schema，建立不成功，
+表现：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;99user.ldif未完全复制过去，00-core.ldif未修改&lt;/li&gt;
+  &lt;li&gt;复制链路未建立&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;code&gt;报错信息如下: 
+&lt;/code&gt;将服务器 172.18.64.42:5444 上的注册信息初始化为服务器 172.18.64.39:5444 的内容 ….. 在使用服务器 172.18.64.39:5444 中的内容进行初始化期间出现错误。最新日志详细信息: [30/七月/2012:23:37:17 +0800]severity=”NOTICE” msgCount=0 msgID=9896349 message=”通过副本初始化 任务quicksetup-initialize1 已开始执行”。任务状态: STOPPED_BY_ERROR。有关详细信息，请检查172.18.64.39:5444 的错误日志。请参见 /tmp/opends-replication-6498757972750616075.log 以了解有关此操作的详细日志。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;section-2&quot;&gt;初始解决方法&lt;/h3&gt;
+&lt;p&gt;将42机器上的schema以及config.xml都修改一致，并发数据也导入。
+但还是报错。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;code&gt;报错信息如下: 
+&lt;/code&gt;在使用服务器 linux-5tzq:5444 中的内容进行初始化期间出现错误。最新日志详细信息: [31/七月/2012:02:26:33 +0800] severity=”NOTICE” msgCount=0 msgID=9896349 message=”通过副本初始化 任务 quicksetup-initialize2 已开始执行”。任务状态: STOPPED_BY_ERROR。有关详细信息，请检查linux-5tzq:5444 的错误日志。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;section-3&quot;&gt;最后解决&lt;/h3&gt;
+&lt;p&gt;执行：&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;vg&quot;&gt;$getent&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hosts&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;linux&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tzq&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code&gt;发现 两台主机ip均一致，为127.0.1.1 ，显然错误。 
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;把172.18.64.42的主机ip地址更改为 127.0.1.2, 配置双向复制成功。&lt;/p&gt;
+</description>
+				<pubDate>Fri, 16 May 2014 00:00:00 +0800</pubDate>
+				<link>/suse/opends/2014/05/16/opends-in-suse.html</link>
+				<guid isPermaLink="true">/suse/opends/2014/05/16/opends-in-suse.html</guid>
+			</item>
+		
+			<item>
+				<title>ubuntu12.04下使用eclipse的一些技巧</title>
+				<description>&lt;p&gt;对于ubuntu12.04下使用eclipse的显示优化
+本机环境：ubuntu12.04(64bit) + Eclipse juno4.2R&lt;/p&gt;
+
+&lt;h3 id=&quot;quick-access&quot;&gt;隐藏quick access&lt;/h3&gt;
+
+&lt;p&gt;如果不太使用quick access, 也觉得很占显示地方，可以隐藏掉它．
+编辑 /opt/eclipse/plugins/org.eclipse.platform_4.2.2.v201302041200/css,&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-vim&quot; data-lang=&quot;vim&quot;&gt;&lt;span class=&quot;k&quot;&gt;vi&lt;/span&gt; e4\_classic\_winxp.css&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;note:&lt;/strong&gt;
+Here is a quick hack which doesn’t require any plugin installation, instead you just need to add a few lines to your current layout’s CSS file. Works perfectly for me in v4.2.2 
+Navigate to &amp;lt;ECLIPSE_HOME&amp;gt;/plugins/org.eclipse.platform_&lt;version&gt;/css then open up the CSS file of whichever layout you are using, e.g. mine was e4\_default.css. Now append the following snippet to the file:&lt;/version&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;c1&quot;&gt;#SearchField {&lt;/span&gt;
+	    &lt;span class=&quot;ss&quot;&gt;visibility&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hidden&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Now just restart Eclipse and the box is gone.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;Attn: 我使用的是juno (ubuntu 12.04) ，编辑e4\_classic\_winxp.css (很奇怪)
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;section&quot;&gt;显示代码很好的字体&lt;/h3&gt;
+
+&lt;p&gt;&lt;strong&gt;YaHei Consolas Hybrid&lt;/strong&gt; &lt;em&gt;or&lt;/em&gt; &lt;strong&gt;Courier New&lt;/strong&gt;  &lt;em&gt;or&lt;/em&gt; &lt;strong&gt;Consolas&lt;/strong&gt; &lt;em&gt;or&lt;/em&gt; &lt;strong&gt;Courier 10 pitch&lt;/strong&gt;&lt;br /&gt;
+(个人感觉前三者差不多，最后一个显示较好)&lt;/p&gt;
+
+&lt;p&gt;YaHei字体获取： &lt;a href=&quot;http://dl.dbank.com/c01bo3a1eo#&quot;&gt;http://dl.dbank.com/c01bo3a1eo#&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;cvs&quot;&gt;cvs插件迁出中文乱码问题解决&lt;/h3&gt;
+
+&lt;p&gt;进入CVS Repository Exploring 视图，右键选择你的cvs repository , 选择properties, 
+然后在对话框中选择Server Encoding, 更改text file encoding选项即可。&lt;/p&gt;
+
+&lt;h3 id=&quot;workspace&quot;&gt;更改workspace目录&lt;/h3&gt;
+
+&lt;p&gt;以下３种方法均可：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;进入 Window &amp;gt; Preferences &amp;gt; General &amp;gt; Startup and Shutdown 选中 Prompt
+for workspace on startup。&lt;/li&gt;
+  &lt;li&gt;进入Eclipse的安装目录，找到configuration 目录下的 .settings 文件夹，里面有一个
+org.eclipse.ui.ide.prefs， 用UltraEdit等打开，也可以用写字板打开，找到RECENT_WORKSPACES，按照它的格式修改一下。&lt;/li&gt;
+  &lt;li&gt;先打开Eclipse，进入之后，再去打开一次，会提示 Workspace in use or cannot be created,
+choose a different one 这时候就会提示你更改workspace的目录了。&lt;/li&gt;
+&lt;/ol&gt;
+
+</description>
+				<pubDate>Tue, 04 Mar 2014 00:00:00 +0800</pubDate>
+				<link>/ubuntu/eclipse/2014/03/04/ubuntu1204-eclipse-tips.html</link>
+				<guid isPermaLink="true">/ubuntu/eclipse/2014/03/04/ubuntu1204-eclipse-tips.html</guid>
+			</item>
+		
+			<item>
+				<title>更新托管在github上的个人blog</title>
+				<description>&lt;h3 id=&quot;md&quot;&gt;新建md文件&lt;/h3&gt;
+
+&lt;p&gt;首先需要取下个人blog的repository.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;vg&quot;&gt;$git&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;clone&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;https&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;//&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;github&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;com&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;leipingr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;leipingr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;github&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;io&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;git&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;在 _posts目录复制一个文件，修改描述信息，编辑完内容，保存。&lt;/p&gt;
+
+&lt;p&gt;(个人喜欢用Ulysses.)&lt;/p&gt;
+
+&lt;h3 id=&quot;section&quot;&gt;本地调试&lt;/h3&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;vg&quot;&gt;$jekyll&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;查看效果。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Tips:&lt;/strong&gt;
+有可能本地调试比较慢，是因为访问了google-analytics.com，使用了插件。需要更新下本机hosts文件，访问google较快即可。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;github&quot;&gt;提交到github&lt;/h3&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;vg&quot;&gt;$git&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;add&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;vg&quot;&gt;$git&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;commit&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;  &lt;span class=&quot;s2&quot;&gt;&amp;quot;some description.&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;vg&quot;&gt;$git&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;push&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;origin&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;master&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;结束。&lt;/p&gt;
+</description>
+				<pubDate>Wed, 01 Jan 2014 00:00:00 +0800</pubDate>
+				<link>/blog/github/2014/01/01/update-my-blog-on-github.html</link>
+				<guid isPermaLink="true">/blog/github/2014/01/01/update-my-blog-on-github.html</guid>
+			</item>
+		
+	</channel>
+</rss>
