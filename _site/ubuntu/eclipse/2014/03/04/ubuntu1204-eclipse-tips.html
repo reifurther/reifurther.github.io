@@ -60,7 +60,7 @@
 			
 			<a class="navbar-brand" href="/">
 				<img src="assets/media/author.jpg" class="img-circle" />
-				
+				Reifurther
 			</a>
 		</div>
 
@@ -95,7 +95,7 @@
 		<img src="/assets/media/author.jpg" class="img-circle" />
 	</a>
 	<h3 class="title">
-        <a href="/"></a>
+        <a href="/">Reifurther</a>
     </h3>
 </header>
 
@@ -177,21 +177,22 @@
 <h3 id="quick-access">隐藏quick access</h3>
 
 <p>如果不太使用quick access, 也觉得很占显示地方，可以隐藏掉它．
-编辑 /opt/eclipse/plugins/org.eclipse.platform_4.2.2.v201302041200/css,</p>
-
-<div class="highlight"><pre><code class="language-vim" data-lang="vim"><span class="k">vi</span> e4\_classic\_winxp.css</code></pre></div>
+编辑 /opt/eclipse/plugins/org.eclipse.platform_4.2.2.v201302041200/css,
+<code>ruby
+    vi e4\_classic\_winxp.css 
+</code></p>
 
 <blockquote>
   <p><strong>note:</strong>
 Here is a quick hack which doesn’t require any plugin installation, instead you just need to add a few lines to your current layout’s CSS file. Works perfectly for me in v4.2.2 
-Navigate to &lt;ECLIPSE_HOME&gt;/plugins/org.eclipse.platform_<version>/css then open up the CSS file of whichever layout you are using, e.g. mine was e4\_default.css. Now append the following snippet to the file:</version></p>
+Navigate to &lt;ECLIPSE_HOME&gt;/plugins/org.eclipse.platform_<version>/css then open up the CSS file of whichever layout you are using, e.g. mine was e4\_default.css. Now append the following snippet to the file:
+```
+#SearchField {
+	    visibility:hidden;
+	} 
+```
+Now just restart Eclipse and the box is gone.</version></p>
 </blockquote>
-
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1">#SearchField {</span>
-	    <span class="ss">visibility</span><span class="p">:</span><span class="n">hidden</span><span class="p">;</span>
-	<span class="p">}</span></code></pre></div>
-
-<p>Now just restart Eclipse and the box is gone.</p>
 
 <p><code>Attn: 我使用的是juno (ubuntu 12.04) ，编辑e4\_classic\_winxp.css (很奇怪)
 </code></p>

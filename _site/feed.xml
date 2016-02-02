@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 	<channel>
-		<title></title>
+		<title>Reifurther</title>
 		<description>My private blog.</description>
 		<link>/</link>
 		<atom:link href="/feed.xml" rel="self" type="application/rss+xml" />
@@ -16,11 +16,11 @@
 &lt;code&gt;The administration connector self-signed certificate cannot be generated
 &lt;/code&gt;&lt;/p&gt;
 
-&lt;p&gt;解决方法，在/etc/hosts里添加一行：&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;mi&quot;&gt;127&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;       &lt;span class=&quot;n&quot;&gt;linux&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tzq&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;其中linux-5tzq 是安装机的主机名。&lt;/p&gt;
+&lt;p&gt;解决方法，在/etc/hosts里添加一行：
+&lt;code&gt;
+127.0.1.1       linux-5tzq
+&lt;/code&gt;
+其中linux-5tzq 是安装机的主机名。&lt;/p&gt;
 
 &lt;h2 id=&quot;section-1&quot;&gt;双向复制数据不能同步问题&lt;/h2&gt;
 
@@ -48,9 +48,10 @@
 &lt;/blockquote&gt;
 
 &lt;h3 id=&quot;section-3&quot;&gt;最后解决&lt;/h3&gt;
-&lt;p&gt;执行：&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;vg&quot;&gt;$getent&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hosts&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;linux&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tzq&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;执行：
+&lt;code&gt;
+$getent hosts linux-5tzq
+&lt;/code&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;code&gt;发现 两台主机ip均一致，为127.0.1.1 ，显然错误。 
 &lt;/code&gt;&lt;/p&gt;
@@ -70,21 +71,22 @@
 &lt;h3 id=&quot;quick-access&quot;&gt;隐藏quick access&lt;/h3&gt;
 
 &lt;p&gt;如果不太使用quick access, 也觉得很占显示地方，可以隐藏掉它．
-编辑 /opt/eclipse/plugins/org.eclipse.platform_4.2.2.v201302041200/css,&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-vim&quot; data-lang=&quot;vim&quot;&gt;&lt;span class=&quot;k&quot;&gt;vi&lt;/span&gt; e4\_classic\_winxp.css&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+编辑 /opt/eclipse/plugins/org.eclipse.platform_4.2.2.v201302041200/css,
+&lt;code&gt;ruby
+    vi e4\_classic\_winxp.css 
+&lt;/code&gt;&lt;/p&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;&lt;strong&gt;note:&lt;/strong&gt;
 Here is a quick hack which doesn’t require any plugin installation, instead you just need to add a few lines to your current layout’s CSS file. Works perfectly for me in v4.2.2 
-Navigate to &amp;lt;ECLIPSE_HOME&amp;gt;/plugins/org.eclipse.platform_&lt;version&gt;/css then open up the CSS file of whichever layout you are using, e.g. mine was e4\_default.css. Now append the following snippet to the file:&lt;/version&gt;&lt;/p&gt;
+Navigate to &amp;lt;ECLIPSE_HOME&amp;gt;/plugins/org.eclipse.platform_&lt;version&gt;/css then open up the CSS file of whichever layout you are using, e.g. mine was e4\_default.css. Now append the following snippet to the file:
+```
+#SearchField {
+	    visibility:hidden;
+	} 
+```
+Now just restart Eclipse and the box is gone.&lt;/version&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;c1&quot;&gt;#SearchField {&lt;/span&gt;
-	    &lt;span class=&quot;ss&quot;&gt;visibility&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hidden&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;Now just restart Eclipse and the box is gone.&lt;/p&gt;
 
 &lt;p&gt;&lt;code&gt;Attn: 我使用的是juno (ubuntu 12.04) ，编辑e4\_classic\_winxp.css (很奇怪)
 &lt;/code&gt;&lt;/p&gt;
@@ -126,17 +128,19 @@ choose a different one 这时候就会提示你更改workspace的目录了。&lt
 
 &lt;p&gt;首先需要取下个人blog的repository.&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;vg&quot;&gt;$git&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;clone&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;https&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;//&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;github&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;com&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;leipingr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;leipingr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;github&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;io&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;git&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;在 _posts目录复制一个文件，修改描述信息，编辑完内容，保存。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;ruby
+`$git clone https://github.com/leipingr/leipingr.github.io.git
+&lt;/code&gt;
+`
+在 _posts目录复制一个文件，修改描述信息，编辑完内容，保存。&lt;/p&gt;
 
 &lt;p&gt;(个人喜欢用Ulysses.)&lt;/p&gt;
 
 &lt;h3 id=&quot;section&quot;&gt;本地调试&lt;/h3&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;vg&quot;&gt;$jekyll&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;查看效果。&lt;/p&gt;
+&lt;p&gt;``` ruby
+	$jekyll s
+```
+查看效果。&lt;/p&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;&lt;strong&gt;Tips:&lt;/strong&gt;
@@ -145,9 +149,11 @@ choose a different one 这时候就会提示你更改workspace的目录了。&lt
 
 &lt;h3 id=&quot;github&quot;&gt;提交到github&lt;/h3&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;vg&quot;&gt;$git&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;add&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
-&lt;span class=&quot;vg&quot;&gt;$git&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;commit&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;  &lt;span class=&quot;s2&quot;&gt;&amp;quot;some description.&amp;quot;&lt;/span&gt;
-&lt;span class=&quot;vg&quot;&gt;$git&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;push&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;origin&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;master&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;``` vim
+$git add .
+$git commit -m  “some description.”
+$git push origin master
+```&lt;/p&gt;
 
 &lt;p&gt;结束。&lt;/p&gt;
 </description>

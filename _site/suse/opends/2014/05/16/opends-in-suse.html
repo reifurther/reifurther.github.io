@@ -60,7 +60,7 @@
 			
 			<a class="navbar-brand" href="/">
 				<img src="assets/media/author.jpg" class="img-circle" />
-				
+				Reifurther
 			</a>
 		</div>
 
@@ -95,7 +95,7 @@
 		<img src="/assets/media/author.jpg" class="img-circle" />
 	</a>
 	<h3 class="title">
-        <a href="/"></a>
+        <a href="/">Reifurther</a>
     </h3>
 </header>
 
@@ -179,11 +179,11 @@
 <code>The administration connector self-signed certificate cannot be generated
 </code></p>
 
-<p>解决方法，在/etc/hosts里添加一行：</p>
-
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="mi">127</span><span class="o">.</span><span class="mi">0</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">1</span>       <span class="n">linux</span><span class="o">-</span><span class="mi">5</span><span class="n">tzq</span></code></pre></div>
-
-<p>其中linux-5tzq 是安装机的主机名。</p>
+<p>解决方法，在/etc/hosts里添加一行：
+<code>
+127.0.1.1       linux-5tzq
+</code>
+其中linux-5tzq 是安装机的主机名。</p>
 
 <h2 id="section-1">双向复制数据不能同步问题</h2>
 
@@ -211,9 +211,10 @@
 </blockquote>
 
 <h3 id="section-3">最后解决</h3>
-<p>执行：</p>
-
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="vg">$getent</span> <span class="n">hosts</span> <span class="n">linux</span><span class="o">-</span><span class="mi">5</span><span class="n">tzq</span></code></pre></div>
+<p>执行：
+<code>
+$getent hosts linux-5tzq
+</code></p>
 
 <p><code>发现 两台主机ip均一致，为127.0.1.1 ，显然错误。 
 </code></p>
@@ -233,8 +234,8 @@
 					,
 				</a></li>
 			 
-				<li><a href="/categories.html#opends-ref">
-					opends <span>(1)</span>
+				<li><a href="/categories.html#openDS-ref">
+					openDS <span>(1)</span>
 					
 				</a></li>
 			

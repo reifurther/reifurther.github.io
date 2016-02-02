@@ -13,19 +13,18 @@ description: 对于ubuntu12.04下使用eclipse的显示优化.
 
 如果不太使用quick access, 也觉得很占显示地方，可以隐藏掉它．
 编辑 /opt/eclipse/plugins/org.eclipse.platform\_4.2.2.v201302041200/css,
-{% highlight vim %}
-vi e4\_classic\_winxp.css 
-{% endhighlight %}
-
+``` ruby
+    vi e4\_classic\_winxp.css 
+```
 
 > **note:**
 Here is a quick hack which doesn't require any plugin installation, instead you just need to add a few lines to your current layout's CSS file. Works perfectly for me in v4.2.2 
 Navigate to \<ECLIPSE\_HOME\>/plugins/org.eclipse.platform\_<VERSION>/css then open up the CSS file of whichever layout you are using, e.g. mine was e4\_default.css. Now append the following snippet to the file:
-	{% highlight ruby %}
-	#SearchField {
+```
+#SearchField {
 	    visibility:hidden;
 	} 
-	{% endhighlight %}
+```
 Now just restart Eclipse and the box is gone.
 
 `Attn: 我使用的是juno (ubuntu 12.04) ，编辑e4\_classic\_winxp.css (很奇怪)

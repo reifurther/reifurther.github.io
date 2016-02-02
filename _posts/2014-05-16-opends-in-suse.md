@@ -15,9 +15,9 @@ suse下安装openDS2.2遇到如下问题，供参考。
 `
 
 解决方法，在/etc/hosts里添加一行：
-{% highlight ruby %}
+```
 127.0.1.1       linux-5tzq
-{% endhighlight %}
+```
 其中linux-5tzq 是安装机的主机名。
 
 ## 双向复制数据不能同步问题
@@ -41,9 +41,9 @@ suse下安装openDS2.2遇到如下问题，供参考。
 
 ### 最后解决
 执行：
-{% highlight ruby %}
+```
 $getent hosts linux-5tzq
-{% endhighlight %}
+```
 
 `发现 两台主机ip均一致，为127.0.1.1 ，显然错误。 
 `

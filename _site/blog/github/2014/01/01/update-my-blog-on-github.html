@@ -60,7 +60,7 @@
 			
 			<a class="navbar-brand" href="/">
 				<img src="assets/media/author.jpg" class="img-circle" />
-				
+				Reifurther
 			</a>
 		</div>
 
@@ -95,7 +95,7 @@
 		<img src="/assets/media/author.jpg" class="img-circle" />
 	</a>
 	<h3 class="title">
-        <a href="/"></a>
+        <a href="/">Reifurther</a>
     </h3>
 </header>
 
@@ -175,17 +175,19 @@
 
 <p>首先需要取下个人blog的repository.</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="vg">$git</span> <span class="nb">clone</span> <span class="ss">https</span><span class="p">:</span><span class="sr">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">leipingr</span><span class="o">/</span><span class="n">leipingr</span><span class="o">.</span><span class="n">github</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">git</span></code></pre></div>
-
-<p>在 _posts目录复制一个文件，修改描述信息，编辑完内容，保存。</p>
+<p><code>ruby
+`$git clone https://github.com/leipingr/leipingr.github.io.git
+</code>
+`
+在 _posts目录复制一个文件，修改描述信息，编辑完内容，保存。</p>
 
 <p>(个人喜欢用Ulysses.)</p>
 
 <h3 id="section">本地调试</h3>
-
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="vg">$jekyll</span> <span class="n">s</span></code></pre></div>
-
-<p>查看效果。</p>
+<p>``` ruby
+	$jekyll s
+```
+查看效果。</p>
 
 <blockquote>
   <p><strong>Tips:</strong>
@@ -194,9 +196,11 @@
 
 <h3 id="github">提交到github</h3>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="vg">$git</span> <span class="n">add</span> <span class="o">.</span>
-<span class="vg">$git</span> <span class="n">commit</span> <span class="o">-</span><span class="n">m</span>  <span class="s2">&quot;some description.&quot;</span>
-<span class="vg">$git</span> <span class="n">push</span> <span class="n">origin</span> <span class="n">master</span></code></pre></div>
+<p>``` vim
+$git add .
+$git commit -m  “some description.”
+$git push origin master
+```</p>
 
 <p>结束。</p>
 

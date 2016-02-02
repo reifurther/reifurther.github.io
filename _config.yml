@@ -1,12 +1,16 @@
 # visit https://github.com/mojombo/jekyll/wiki/Configuration for more settings
+title: Reifurther
+email: reifurther@outlook.com
 
 paginate: 10 # pagination based on number of posts
 paginate_path: "page:num"
 exclude: ["README.md"] # files to exclude
-highlighter: pygments
 markdown: kramdown
+highlighter: rouge
+
 disqus: reifurther
 google_analytics: reifurther
+gems: [jekyll-paginate]
 
 defaults:
   -
