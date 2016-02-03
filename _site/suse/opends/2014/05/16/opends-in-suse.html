@@ -175,15 +175,17 @@
 
 <h2 id="section">安装完后无法启动服务器</h2>
 
-<p>提示：
-`The administration connector self-signed certificate cannot be generated
-`</p>
+<p>提示：</p>
+<font color="red">The administration connector self-signed certificate cannot be generated
+</font>
 
-<p>解决方法，在/etc/hosts里添加一行：
-<code>vim
-#127.0.1.1       linux-5tzq
-</code>
-其中linux-5tzq 是安装机的主机名。</p>
+<p>解决方法，在/etc/hosts里添加一行：</p>
+
+<p><code>vim
+127.0.1.1       linux-5tzq
+</code></p>
+
+<p>其中linux-5tzq 是安装机的主机名。</p>
 
 <h2 id="section-1">双向复制数据不能同步问题</h2>
 
@@ -197,8 +199,8 @@
 </ul>
 
 <blockquote>
-  <p>`报错信息如下: 
-`将服务器 172.18.64.42:5444 上的注册信息初始化为服务器 172.18.64.39:5444 的内容 ….. 在使用服务器 172.18.64.39:5444 中的内容进行初始化期间出现错误。最新日志详细信息: [30/七月/2012:23:37:17 +0800]severity=”NOTICE” msgCount=0 msgID=9896349 message=”通过副本初始化 任务quicksetup-initialize1 已开始执行”。任务状态: STOPPED_BY_ERROR。有关详细信息，请检查172.18.64.39:5444 的错误日志。请参见 /tmp/opends-replication-6498757972750616075.log 以了解有关此操作的详细日志。</p>
+  <font color="red">报错信息如下:</font>
+  <p>将服务器 172.18.64.42:5444 上的注册信息初始化为服务器 172.18.64.39:5444 的内容 ….. 在使用服务器 172.18.64.39:5444 中的内容进行初始化期间出现错误。最新日志详细信息: [30/七月/2012:23:37:17 +0800]severity=”NOTICE” msgCount=0 msgID=9896349 message=”通过副本初始化 任务quicksetup-initialize1 已开始执行”。任务状态: STOPPED_BY_ERROR。有关详细信息，请检查172.18.64.39:5444 的错误日志。请参见 /tmp/opends-replication-6498757972750616075.log 以了解有关此操作的详细日志。</p>
 </blockquote>
 
 <h3 id="section-2">初始解决方法</h3>
@@ -206,13 +208,14 @@
 但还是报错。</p>
 
 <blockquote>
-  <p>`报错信息如下: 
-`在使用服务器 linux-5tzq:5444 中的内容进行初始化期间出现错误。最新日志详细信息: [31/七月/2012:02:26:33 +0800] severity=”NOTICE” msgCount=0 msgID=9896349 message=”通过副本初始化 任务 quicksetup-initialize2 已开始执行”。任务状态: STOPPED_BY_ERROR。有关详细信息，请检查linux-5tzq:5444 的错误日志。</p>
+  <font color="red">报错信息如下:</font>
+  <p>在使用服务器 linux-5tzq:5444 中的内容进行初始化期间出现错误。最新日志详细信息: [31/七月/2012:02:26:33 +0800] severity=”NOTICE” msgCount=0 msgID=9896349 message=”通过副本初始化 任务 quicksetup-initialize2 已开始执行”。任务状态: STOPPED_BY_ERROR。有关详细信息，请检查linux-5tzq:5444 的错误日志。</p>
 </blockquote>
 
 <h3 id="section-3">最后解决</h3>
-<p>执行：
-<code>vim
+<p>执行：</p>
+
+<p><code>vim
 $getent hosts linux-5tzq
 </code></p>
 

@@ -16,9 +16,9 @@ description: 快速更新个人blog.
 $git clone https://github.com/leipingr/leipingr.github.io.git
 ```
 
-在 \_posts目录复制一个文件，修改描述信息，编辑完内容，保存。
+在 _posts目录复制一个文件，修改描述信息，编辑完内容，保存。
 
-(个人喜欢用Ulysses.)
+(个人喜欢用MacDown,目前没有之一)
 
 ### 本地调试
 ```vim
@@ -34,7 +34,7 @@ $jekyll s
 
 ```vim
 $git add .
-$git commit -m  "some description."
+$git commit -m 'some description.'
 $git push origin master
 ```
 
