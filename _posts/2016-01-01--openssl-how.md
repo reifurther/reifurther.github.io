@@ -55,7 +55,6 @@ BASE64编解码功能，如：
 ```vim
 OpenSSL> base64 -in money.txt -out money_base64_encoding.txt
 OpenSSL> base64 -in money_base64_encoding.txt -out money_base64_decoding.txt -d
-
 ```
 
 ### 加解密文件
@@ -65,14 +64,12 @@ OpenSSL> base64 -in money_base64_encoding.txt -out money_base64_decoding.txt -d
 ```vim
 OpenSSL> des-ede3-cbc -in money.txt -out money_3des.txt -k 12345678
 OpenSSL> des-ede3-cbc -in money_3des.txt -out money_3des_decpt.txt -k 12345678 -d
-
 ```
 如果需要对加密后的密文再进行BASE64编码，可采用如下指令进行加解密：
 
 ```vim
 OpenSSL> des-ede3-cbc -in money.txt -out money_3des_base64.txt -k 12345678 -e -a 
 OpenSSL> des-ede3-cbc -in money_3des_b64.txt -out money_3des_b64_decpt.txt -k 12345678 -d -a 
-
 ```
 
 除了用 -k 直接显示输入口令外，还有一些方法，如：
@@ -89,19 +86,17 @@ OpenSSL> des-cbc -in money.txt -out money_des.txt -pass env:mypass
 #使用文件
 $echo 12345678 > passfile.txt
 OpenSSL> des-cbc -in money.txt -out money_des.txt -pass file:passfile.txt
-
 ```
 
 对于块加密算法的某些模式，还需要初始向量，这个时候还可以通过参数选择是否使用盐值，如：
 
 ```vim
-OpenSSL> des-cbc -in money.txt -out money_des.txt -k 12345678 -iv 0EFASDF
+OpenSSL> des-cbc -in money.txt -out money_des.txt -k 12345678 -iv CEFASDF
 OpenSSL> des-cbc -in money.txt -out money_des.txt -k 12345678 -nosalt
 OpenSSL> des-cbc -in money.txt -out money_des.txt -k 12345678 -S ABDF23A
 ```
 
 综上：
-
 对称加密的最大缺点是密钥的管理与分配，换句话说，如何安全的把密钥发送到需要解密你的消息的人手里是一个问题。
 
 如果在线上交易中使用，还存在一些问题，如：
