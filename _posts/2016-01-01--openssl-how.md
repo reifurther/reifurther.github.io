@@ -38,7 +38,7 @@ description: 透过openssl学习加密算法、签名、证书等基本知识.
 > OpenSSL实现了8种对称加密算法，其中包括1种流加密算法RC4，7种块加密算法：AES,DES,Blowfish,CAST,IDEA,RC2,RC5
 >
 
-###不进行加密操作
+### 不进行加密操作
 
 OpenSSL是将所有的对称加密算法指令集成到一个指令程序中，就是enc。
 
@@ -58,20 +58,20 @@ OpenSSL> base64 -in money_base64_encoding.txt -out money_base64_decoding.txt -d
 
 ```
 
-###加解密文件
+### 加解密文件
 
 使用3DES的CBC模式进行加解密操作，如：
 
 ```vim
 OpenSSL> des-ede3-cbc -in money.txt -out money_3des.txt -k 12345678
-OpenSSL> des-ede3-cbc -in money_3des.txt -out money_3des_decrypt.txt -k 12345678 -d
+OpenSSL> des-ede3-cbc -in money_3des.txt -out money_3des_decpt.txt -k 12345678 -d
 
 ```
 如果需要对加密后的密文再进行BASE64编码，可采用如下指令进行加解密：
 
 ```vim
 OpenSSL> des-ede3-cbc -in money.txt -out money_3des_base64.txt -k 12345678 -e -a 
-OpenSSL> des-ede3-cbc -in money_3des_base64.txt -out money_3des_base64_decrypt.txt -k 12345678 -d -a 
+OpenSSL> des-ede3-cbc -in money_3des_b64.txt -out money_3des_b64_decpt.txt -k 12345678 -d -a 
 
 ```
 
