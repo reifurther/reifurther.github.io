@@ -23,12 +23,94 @@ description: 透过openssl学习加密算法、签名、证书等基本知识.
 ## 对称加密算法
 
 又称为传统密码算法、单密钥算法 或 秘密密钥算法。
-大多数情况下，加密密钥和解密密钥是相同的。也可以不相同，但是解密密钥能够从加密密钥中推算出来。
+
+对称加密是最快速，最便捷的一种加密方式，它有很多种算法，由于效率很高，所以被广泛的应用在很多加密协议的核心当中。绝大多数情况下，加密密钥和解密密钥是相同的。但是也可以不相同，但是解密密钥能够从加密密钥中推算出来。
+
+
 
 根据加密方式不同，可以分为：
 
 * 流加密算法（序列加密算法）：每次只对明文中的单个bit或单个Byte进行加密，优点是能够实时进行数据传输和解密，缺点是抗攻击能力比较弱。
 * 块加密算法（分组加密算法）：每次对明文中的一组数据位（典型长度64位）进行加密，优点反之。
+
+> **Tips:**
+> 
+> OpenSSL实现了8种对称加密算法，其中包括1种流加密算法RC4，7种块加密算法：AES,DES,Blowfish,CAST,IDEA,RC2,RC5
+>
+
+###不进行加密操作
+
+OpenSSL是将所有的对称加密算法指令集成到一个指令程序中，就是enc。
+
+enc可以支持不对文件进行任何加解密操作，它支持复制或编解码操作。
+
+简单复制功能，如：
+
+```vim
+OpenSSL> enc -none -in money.txt -out money_enc.txt  
+```
+
+BASE64编解码功能，如：
+
+```vim
+OpenSSL> base64 -in money.txt -out money_base64_encoding.txt
+OpenSSL> base64 -in money_base64_encoding.txt -out money_base64_decoding.txt -d
+
+```
+
+###加解密文件
+
+使用3DES的CBC模式进行加解密操作，如：
+
+```vim
+OpenSSL> des-ede3-cbc -in money.txt -out money_3des.txt -k 12345678
+OpenSSL> des-ede3-cbc -in money_3des.txt -out money_3des_decrypt.txt -k 12345678 -d
+
+```
+如果需要对加密后的密文再进行BASE64编码，可采用如下指令进行加解密：
+
+```vim
+OpenSSL> des-ede3-cbc -in money.txt -out money_3des_base64.txt -k 12345678 -e -a 
+OpenSSL> des-ede3-cbc -in money_3des_base64.txt -out money_3des_base64_decrypt.txt -k 12345678 -d -a 
+
+```
+
+除了用 -k 直接显示输入口令外，还有一些方法，如：
+
+```vim
+OpenSSL> des-cbc -in money.txt -out money_des.txt
+OpenSSL> des-cbc -in money.txt -out money_des.txt -pass stdin
+OpenSSL> des-cbc -in money.txt -out money_des.txt -pass pass:12345678
+
+#使用环境变量
+$export mypass=12345678
+OpenSSL> des-cbc -in money.txt -out money_des.txt -pass env:mypass
+
+#使用文件
+$echo 12345678 > passfile.txt
+OpenSSL> des-cbc -in money.txt -out money_des.txt -pass file:passfile.txt
+
+```
+
+对于块加密算法的某些模式，还需要初始向量，这个时候还可以通过参数选择是否使用盐值，如：
+
+```vim
+OpenSSL> des-cbc -in money.txt -out money_des.txt -k 12345678 -iv 0EFASDF
+OpenSSL> des-cbc -in money.txt -out money_des.txt -k 12345678 -nosalt
+OpenSSL> des-cbc -in money.txt -out money_des.txt -k 12345678 -S ABDF23A
+```
+
+综上：
+
+对称加密的最大缺点是密钥的管理与分配，换句话说，如何安全的把密钥发送到需要解密你的消息的人手里是一个问题。
+
+如果在线上交易中使用，还存在一些问题，如：
+
+* 通讯双方在首次通信时协商一个共同的密钥，这个通道必须是安全可靠的
+* 密钥的数目太大，不同的通讯者之间都不一样，这很难适应开放式大量的信息交流
+* 对称加密算法本身不能验证发送者和接受者的身份
+
+1976年，美国学者Dime和Henman为解决信息公开传送和密钥管理问题，提出了一种新的密钥交换协议，即允许在不安全的媒体上的通讯双方交换信息，安全的达成一致的密钥。就是『公开密钥系统』。相对于「对称加密算法」也叫做「非对称加密算法」，这也意味着现代密码学的重大突破。
 
 ## 非对称加密算法
 
@@ -39,9 +121,15 @@ description: 透过openssl学习加密算法、签名、证书等基本知识.
 * 普通的数据加密：使用公钥进行加密，而使用私钥进行解密。
 * 数字签名：使用私钥进行加密，而使用公钥进行解密。
 
-
+> **Tips:**
+> 
+> OpenSSL实现了4种非对称加密算法，包括：DH, RSA, DSA, EC。其中RSA即可用于密钥交换，也可用于数字签名。
+> 
+> 实现了5种信息摘要算法，包括：MD2, MD5, MDC2, SHA, DSS.
 
 ## 信息摘要和数字签名
+
+
 
 
 ## 证书和CA
