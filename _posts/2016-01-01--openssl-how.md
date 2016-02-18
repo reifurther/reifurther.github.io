@@ -237,10 +237,71 @@ OpenSSL> dgst -sha1 -verify money_rsa_pubkey.pem -signature money_sgn.txt money.
 ```
 
 
+但是：
+签名、验签虽然近乎完美，但仍不能证明这个私钥持有者的真实身份。
 
 ## 证书和CA
 
-### PKI与数字证书
+数字证书： 建立实体跟密钥对之间的联系
+
+CA: 所用用户都信任，确认特定实体与密钥对一致。
+
+### 申请证书
+
+申请证书包含很多步骤，如生成密钥对，填写用户信息、签名等。
+
+* 用户先生成私钥
+* 根据私钥生成证书请求
+
+### 颁发证书
+
+### 证书验证
+
+### 证书吊销
+
+### 证书过期
+
+## 建立CA服务器
+
+CA服务器本质上是一个应用程序，技术上实现了符合PKI和X.509等标准的证书签发和管理功能。
+
+CA服务器的基本功能包括：接受申请证书请求、审核证书请求、签发证书、发布证书、吊销证书、生成和发布证书吊销列表（CRL）、证书库管理
+
+### 手动创建
+
+CA的目录结构可以手工创建，步骤如下：
+
+1. 创建名为「demoCA」的目录。
+2. 在该目录下创建 newcerts, private, crl 和 certs 子目录。
+3. 在该目录下创建 一个空的index.txt文本文件。
+4. 在该目录下创建 一个空的serial文件，文件中填01
+5. 生成一个自签的根证书cacert.pem 放到该目录下
+6. 生成一个私钥cakey.pem 放到 demoCA/private 目录下
+
+这里5，6步用到的证书和私钥文件，可以通过如下命令创建：
+
+```vim
+OpenSSL> req -x509 -newkey rsa:2048 -keyout cakey.pem -out cacert.pem
+```
+
+
+### 自动创建
+
+openssl的贴心服务， 可自动创建一个CA目录结构，这里是利用openssl默认自带的ca.pl脚本，如下：
+
+```vim
+# 将脚本文件放到想创建的一个目录下
+$cp /System/Library/OpenSSL/misc/CA.pl .
+
+# 生成demoCA目录 
+$perl CA.pl -newca
+```
+
+脚本中使用的是openssl默认配置文件：/System/Library/OpenSSL/openssl.cnf。
+
+当然也可以手动指定配置文件，设置 **OPENSSL_CONF** 环境变量即可。
+
+### PKI
 
 PKI（公钥基础设施）：是一种基于非对称密钥算法的安全基础标准，提供一个框架，建立特定密钥对与具体的个人身份联系的可信任关系，而建立这种联系的主要形式就是颁发可信任的数字证书。
 
