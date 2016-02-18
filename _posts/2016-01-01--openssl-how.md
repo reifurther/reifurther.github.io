@@ -111,21 +111,130 @@ OpenSSL> des-cbc -in money.txt -out money_des.txt -k 12345678 -S ABDF23A
 
 ## 非对称加密算法
 
-又称为公开密钥算法。加密密钥（公钥）和解密密钥（私钥）不相同，至于理论上解密密钥很难根据加密密钥推算出来。
+又称为公开密钥算法。其基本特点如下：
 
-其算法一般有两种典型的应用：
+* 加密密钥与解密密钥不相同
+* 密钥对中的一个密钥可以公开 （称为公开密钥）
+* 根据公开密钥很难推算出私人密钥
 
-* 普通的数据加密：使用公钥进行加密，而使用私钥进行解密。
+因为其算法较对称加密算法要慢很多，所以一般不直接用于大量数据的加密，主要有两种典型的应用：
+
+* 密钥交换：使用公钥进行加密，而使用私钥进行解密。
 * 数字签名：使用私钥进行加密，而使用公钥进行解密。
 
 > **Tips:**
 > 
-> OpenSSL实现了4种非对称加密算法，包括：DH, RSA, DSA, EC。其中RSA即可用于密钥交换，也可用于数字签名。
+> OpenSSL实现了4种非对称加密算法，包括：DH, RSA, DSA, EC。
 > 
-> 实现了5种信息摘要算法，包括：MD2, MD5, MDC2, SHA, DSS.
+> 其中RSA既可用于密钥交换，也可用于数字签名。DH只能用于密钥交换，DSA专用于数字签名。
+> 
+
+
+### 生成、管理、使用RSA密钥
+
+利用genrsa指令可以生成并输出一个RSA私钥，如下：
+
+```vim
+# 生成一个1024位的RSA私钥，对输出密钥不加密
+$openssl genrsa -out rsa_privatekey.pem 1024
+
+# 生成一个1024位的RSA密钥，并采用DES3算法进行加密
+$openssl genrsa -out rsa_privatekey2.pem -passout pass:12345678 1024
+```
+
+利用rsa指令可以对密钥进行一些处理，如重新设置加密口令或加密算法、从私钥中输出公钥参数、进行格式转换等。
+
+```vim
+# 将采用DES3算法进行加密的RSA私钥 转换成使用256位AES算法加密
+$openssl rsa -in rsa_privatekey2.pem -passin pass:12345678 -out rsa_pk_aes.pem -passout pass:12345678 -aes256
+```
+
+利用rsautl可以用来进行数据的加解密：
+
+```vim
+# 首先根据私钥生成对应的公钥
+$openssl rsa -in rsaprivatekey2.pem -pubout -out rsapublickey2.pem
+
+# 利用公钥对数据进行加密
+$openssl rsautl -in money.txt -out money_encrypt.txt -inkey rsapublickey2.pem -pubin -encrypt
+
+# 利用私钥对数据进行解密
+$openssl rsautl -in  money_encrypt.txt -out money_decrypt.txt -inkey rsaprivatekey2.pem -decrypt
+```
+
+DH,DSA的操作与上类似。
+
+另外，如上可见不管是哪种加密算法，都是可逆的。
+
+
 
 ## 信息摘要和数字签名
 
+信息摘要算法一般用于保证数据的完整性， 它几乎是不可逆的。它是将数据量较小的数据（固定长度的摘要信息）与原数据量较大的文件建立一种特定的一一对应关系。
+
+对于一个大文件来说使用非对称算法加解密太慢，所以通常是将信息摘要算法和非对称算法结合使用。
+
+> **Tips:**
+> 
+> OpenSSL实现了5种信息摘要算法，包括：MD2, MD5, MDC2, SHA, DSS.
+> 
+
+信息摘要操作可以直接使用算法名指令md5之类，也可用统一指令dgst，如：
+
+```vim
+# 使用md5对文件进行信息摘要操作
+$openssl dgst -md5 money.txt
+
+# 可规整信息
+$openssl dgst -md5 -c -hex money.txt
+
+# 可指定随机种子文件
+$openssl dgst -md5 -rand file1:file2 money.txt
+
+```
+
+
+### 执行数字签名
+
+一个实用的数字签名操作流程如下：
+
+* 产生一个RSA(或DSA)密钥对
+* 对要签名的原始文件File做信息摘要操作，得到摘要信息Mf。
+* 使用RSA私钥对Mf进行加密得到Sf。
+* Sf就是原始文件的签名信息，可跟文件一起保存，或发送给接收人。
+
+
+```vim
+# 1. 首先生成一个RSA密钥，加密保存
+$openssl genrsa -out money_rsa_privkey.pem -passout pass:12345678 -des3 1024
+# 2. 根据RSA私钥导出一个相应的RSA公钥
+$openssl rsa -in money_rsa_privkey.pem -passin pass:12345678 -out money_rsa_pubkey.pem -pubout
+# 3. 使用sha1算法对原文件做信息摘要操作
+$openssl dgst -sha1 money.txt -out money_sgn.txt
+# 4. 使用rsa私钥对摘要信息做加密
+$openssl rsautl -in money_sgn.txt -out money_encrypt.txt -inkey money_rsa_privkey.pem -pubin -encrypt
+
+# 上面的3，4步其实可以简单通过dgst可以合为1步完成
+$openssl dgst -sha1 -sign money_rsa_privkey.pem -out money_sgn.txt money.txt
+```
+
+将 money.txt, money_sgn.txt, money_rsa_pubkey.pem 一起发送给接收方，完成整个签名流程。
+
+
+### 验证数字签名
+
+对上述数字签名的验证过程如下：
+
+* 验证者收到File和Sf后，首先对文件File采用相同的信息摘要算法，得到摘要信息Mfn。
+* 使用公钥对Sf进行解密得到Mfo。
+* 比较Mfn 和 Mfo，如果相同，则验证成功，证明文件file没有更改，并且数字签名Sf有效。
+
+验证RSA数字签名很简单，一个指令即可：
+
+```vim
+# 签名算法必须指定
+$openssl dgst -sha1 -verify money_rsa_pubkey.pem -signature money_sgn.txt money.txt
+```
 
 
 
