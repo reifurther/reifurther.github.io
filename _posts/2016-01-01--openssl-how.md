@@ -146,20 +146,20 @@ $openssl genrsa -out rsa_privatekey2.pem -passout pass:12345678 1024
 
 ```vim
 # 将采用DES3算法进行加密的RSA私钥 转换成使用256位AES算法加密
-$openssl rsa -in rsa_privatekey2.pem -passin pass:12345678 -out rsa_pk_aes.pem -passout pass:12345678 -aes256
+OpenSSL> rsa -in rsa_privatekey2.pem -passin pass:12345678 -out rsa_pk_aes.pem -passout pass:12345678 -aes256
 ```
 
 利用rsautl可以用来进行数据的加解密：
 
 ```vim
 # 首先根据私钥生成对应的公钥
-$openssl rsa -in rsaprivatekey2.pem -pubout -out rsapublickey2.pem
+OpenSSL> rsa -in rsaprivatekey2.pem -pubout -out rsapublickey2.pem
 
 # 利用公钥对数据进行加密
-$openssl rsautl -in money.txt -out money_encrypt.txt -inkey rsapublickey2.pem -pubin -encrypt
+OpenSSL> rsautl -in money.txt -out money_encrypt.txt -inkey rsapublickey2.pem -pubin -encrypt
 
 # 利用私钥对数据进行解密
-$openssl rsautl -in  money_encrypt.txt -out money_decrypt.txt -inkey rsaprivatekey2.pem -decrypt
+OpenSSL> rsautl -in  money_encrypt.txt -out money_decrypt.txt -inkey rsaprivatekey2.pem -decrypt
 ```
 
 DH,DSA的操作与上类似。
@@ -206,16 +206,16 @@ $openssl dgst -md5 -rand file1:file2 money.txt
 
 ```vim
 # 1. 首先生成一个RSA密钥，加密保存
-$openssl genrsa -out money_rsa_privkey.pem -passout pass:12345678 -des3 1024
+OpenSSL> genrsa -out money_rsa_privkey.pem -passout pass:12345678 -des3 1024
 # 2. 根据RSA私钥导出一个相应的RSA公钥
-$openssl rsa -in money_rsa_privkey.pem -passin pass:12345678 -out money_rsa_pubkey.pem -pubout
+OpenSSL> rsa -in money_rsa_privkey.pem -passin pass:12345678 -out money_rsa_pubkey.pem -pubout
 # 3. 使用sha1算法对原文件做信息摘要操作
-$openssl dgst -sha1 money.txt -out money_sgn.txt
+OpenSSL> dgst -sha1 money.txt -out money_sgn.txt
 # 4. 使用rsa私钥对摘要信息做加密
-$openssl rsautl -in money_sgn.txt -out money_encrypt.txt -inkey money_rsa_privkey.pem -pubin -encrypt
+OpenSSL> rsautl -in money_sgn.txt -out money_encrypt.txt -inkey money_rsa_privkey.pem -pubin -encrypt
 
 # 上面的3，4步其实可以简单通过dgst可以合为1步完成
-$openssl dgst -sha1 -sign money_rsa_privkey.pem -out money_sgn.txt money.txt
+OpenSSL> dgst -sha1 -sign money_rsa_privkey.pem -out money_sgn.txt money.txt
 ```
 
 将 money.txt, money_sgn.txt, money_rsa_pubkey.pem 一起发送给接收方，完成整个签名流程。
@@ -233,7 +233,7 @@ $openssl dgst -sha1 -sign money_rsa_privkey.pem -out money_sgn.txt money.txt
 
 ```vim
 # 签名算法必须指定
-$openssl dgst -sha1 -verify money_rsa_pubkey.pem -signature money_sgn.txt money.txt
+OpenSSL> dgst -sha1 -verify money_rsa_pubkey.pem -signature money_sgn.txt money.txt
 ```
 
 
