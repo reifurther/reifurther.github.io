@@ -246,18 +246,75 @@ OpenSSL> dgst -sha1 -verify money_rsa_pubkey.pem -signature money_sgn.txt money.
 
 CA: 所用用户都信任，确认特定实体与密钥对一致。
 
+证书按照其在证书链的位置分类，可分为：**终端用户证书** 和 **CA证书**。
+
+* 终端用户证书：在证书链中处于最末端，只能用于具体应用程序或协议中
+* CA证书：可以签发别的用户证书，即可有下级证书
+
+对于一般用户来说申请的都是终端用户证书，也可以申请CA证书。对于OpenSSL来说是在配置文件openssl.cnf中通过[v3_req]节的***basicConstraints***字段指定的，keystone默认关。
+
 ### 申请证书
 
 申请证书包含很多步骤，如生成密钥对，填写用户信息、签名等。
 
 * 用户先生成私钥
-* 根据私钥生成证书请求
+* 根据私钥生成证书请求文件
+
+下面命令可同时生成1024位的私钥和证书请求文件：
+
+```vim
+OpenSSL> req -new -newkey rsa:1024 -keyout privkey.pem -passout pass:12345678 -out req.pem
+```
+
+上面的命令虽然简单，但保护RSA私钥是采用默认DES3-CBC方式（可直接查看privkey.pem文件头），如果想采用其它的算法就必须分开了，如下：
+
+```vim
+# 先产生私钥，采用256位的AES算法
+OpenSSL> genrsa -aes256 -passout pass:12345678 -out rsakey.pem 1024
+# 根据私钥生成证书请求文件
+OpenSSL> req -new -key rsakey.pem -passin pass:12345678 -out req.pem
+```
+
+
+当然，也可以对已经签发的证书请求文件进行验证：
+
+```vim
+OpenSSL> req -in req.pem -verify -noout
+```
+
 
 ### 颁发证书
 
-### 证书验证
+签发证书的过程，应该是利用CA服务器中CA的私钥进行加密的过程。
+
+具体操作如下，其中req.pem是用户的证书审请文件：
+
+
+```vim
+OpenSSL> ca -in req.pem -out mycert.cer -notext
+```
+
+> **Tips:**
+> 
+> 需要注意的是，用户生成申请证书请求文件时输入的commonName应与CA本身产生私钥的commonName不能相同，否则会出现：
+> ```TXT_DB error number 2``` 错误。
+> 
+
 
 ### 证书吊销
+
+证书吊销共分为4步：
+
+```vim
+# 执行吊销证书指令，如指明吊销原因是因为证书私钥泄漏
+OpenSSL> ca -revoke mycert.cer -crl_reason keyCompromise
+# 吊销完了还要生成一个CRL，可以设定CRL的更新时间为7天7小时
+OpenSSL> ca -gencrl -crldays 7 -crlhours 7 -out crl.crl
+# 查询序列号为1的证书状态
+OpenSSL> ca -status 1
+# 更新文本证书数据库
+OpenSSL> ca -updatedb
+```
 
 ### 证书过期
 
@@ -266,6 +323,19 @@ CA: 所用用户都信任，确认特定实体与密钥对一致。
 CA服务器本质上是一个应用程序，技术上实现了符合PKI和X.509等标准的证书签发和管理功能。
 
 CA服务器的基本功能包括：接受申请证书请求、审核证书请求、签发证书、发布证书、吊销证书、生成和发布证书吊销列表（CRL）、证书库管理
+
+CA的目录结构说明：
+
+* newcerts目录: 存放新证书
+* certs目录：存放签发者证书
+* private目录：存放私钥文件
+* crl目录：存放CA的CRL
+* cacert.pem：CA证书
+* cakey.pem：CA私钥
+* index.txt：文本证书库文件
+* serial：序列号文件 
+
+这些目录文件也可以通过openssl.cnf修改。
 
 ### 手动创建
 
@@ -278,11 +348,13 @@ CA的目录结构可以手工创建，步骤如下：
 5. 生成一个自签的根证书cacert.pem 放到该目录下
 6. 生成一个私钥cakey.pem 放到 demoCA/private 目录下
 
-这里5，6步用到的证书和私钥文件，可以通过如下命令创建：
+其中5，6步用到的证书和私钥文件，可以通过如下命令创建：
 
 ```vim
 OpenSSL> req -x509 -newkey rsa:2048 -keyout cakey.pem -out cacert.pem
 ```
+
+这里是采用自签的根证书，也可以是向另一个CA申请的证书。
 
 
 ### 自动创建
