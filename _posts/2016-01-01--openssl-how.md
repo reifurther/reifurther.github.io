@@ -300,6 +300,18 @@ OpenSSL> ca -in req.pem -out mycert.cer -notext
 > ```TXT_DB error number 2``` 错误。
 > 
 
+有一些基本命令可以查看已颁发证书的内容：
+
+```vim
+# 将证书内容直接输出到屏幕
+OpenSSL> x509 -in mycert.cer -noout -text
+# 显示证书的序列号
+OpenSSL> x509 -in mycert.cer -noout -serial
+# 显示证书HASH值
+OpenSSL> x509 -in mycert.cer -noout -hash
+
+```
+
 
 ### 证书吊销
 
@@ -316,7 +328,6 @@ OpenSSL> ca -status 1
 OpenSSL> ca -updatedb
 ```
 
-### 证书过期
 
 ## 建立CA服务器
 
@@ -393,8 +404,24 @@ SSL协议中的重要概念：
 * 连接：是两台主机之间提供特定类型服务的传输，是点对点的关系，每个连接都与一个会话相关联。
 * 会话：是客户端和服务器之间的关联，通过握手协议进行创建，多个连接可共享一个会话。
 
+在openssl中提供了一些指令来模拟一个SSL客户端或是服务端
 
+1. 连接一个HTTPS服务器
+		
+```vim
+OpenSSL> s_client -connect 113.107.107.80:443
 
-## 客户端模拟
+# 如果要显示出其所使用的证书链 
+OpenSSL> s_client -connect 113.107.107.80:443 -showcerts
 
+```
+
+2. 测试10秒内的连接数，这里指定使用RC4-MD5算法
+
+```vim
+OpenSSL> s_time -connect 113.107.107.80:443 -www portal/login.jsp -time 10 -cipher RC4-MD5
+
+```
+ 		
+更详细的内容后面补充....
 
