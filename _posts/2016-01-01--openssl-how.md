@@ -406,7 +406,7 @@ SSL协议中的重要概念：
 
 在openssl中提供了一些指令来模拟一个SSL客户端或是服务端
 
-1. 连接一个HTTPS服务器
+**连接一个HTTPS服务器**
 		
 ```vim
 OpenSSL> s_client -connect 113.107.107.80:443
@@ -416,7 +416,7 @@ OpenSSL> s_client -connect 113.107.107.80:443 -showcerts
 
 ```
 
-2. 测试10秒内的连接数，这里指定使用RC4-MD5算法
+**测试10秒内的连接数，这里指定使用RC4-MD5算法**
 
 ```vim
 OpenSSL> s_time -connect 113.107.107.80:443 -www portal/login.jsp -time 10 -cipher RC4-MD5
