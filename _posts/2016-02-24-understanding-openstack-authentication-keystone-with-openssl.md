@@ -72,9 +72,11 @@ API endpoint只需要根据证书验签就可以了，可以做到离线认证�
 
 之前的文章也提到了具体操作，这里是将keystone中的源码提出来，简化分析：
 
-### 对于keystone的CA端
+### CA端
 
-CA端很简单，生成私钥和自签证书即可，
+在keystone中内置有CA程序，它实际上是利用openssl自建了一个CA中心，与keystone没有关系。
+
+CA端操作很简单，生成CA私钥和自签证书即可，
 
 * 生成CA的私钥
 
@@ -90,65 +92,44 @@ $openssl req -new -x509 -days 3650 -key ca_private_key.pem -out cacert.crt
 
 上面也可以一条命令搞掂，可参考之前的文章『自建CA章节』。
 
-* 根据用户reifu的申请文件，生成用户证书
+* 根据keystone申请文件，生成用户证书
 
 ```vim
 OpenSSL> x509 -days 3650 -req -CA cacert.crt -CAkey ca_private_key.pem -CAcreateserial -CAserial ca.srl -in swift_reifu_req.csr -out swift_reifu.crt
 ```
 
 
-### openstack其它组件端
+### keystone端
 
-这里以swift组件的用户**reifu**为例，
+这里keystone实际上是作为用户，
 
-* 首先reifu用户生成自己的私钥
+* 首先为keystone生成自己的私钥
 
 ```vim
-OpenSSL> genrsa -out swift_reifu_key.pem 1024  
+OpenSSL> genrsa -out signing_key.pem 1024  
 ```
 
 * 利用私钥生成证书请求文件
 
 ```vim
-OpenSSL> req -new -key swift_reifu_key.pem -out swift_reifu_req.csr  
+OpenSSL> req -new -key signing_key.pem -out signing_req.csr  
 ```
 
-将证书文件发给CA，生成用户证书。拿到CA颁发的用户证书swfit_reifu.crt之后，
+将证书文件发给CA，生成用户证书。拿到CA颁发的用户证书signing_cert.pem之后，就可以进行签名及验签了。
 
-* token加密
+* 产生CMS格式的token
 
 利用**用户证书和用户私钥**将原信息进行签名，得到签名后的token。
 
 ```vim
-OpenSSL> cms -sign -signer swift_reifu.crt -inkey swift_reifu_key.pem -outform PEM -nosmimecap -nodetach -nocerts -noattr < reifu_info.txt > reifu_info_sec.txt
+OpenSSL> cms -sign -signer signing_cert.pem -inkey signing_key.pem -outform PEM -nosmimecap -nodetach -nocerts -noattr < reifu_info.txt > reifu_info_sec.txt
 ```
 
-* token解密
+* 验证签名
 
 利用**用户证书和CA证书**进行验签，若验签通过，则返回原信息
 
 ```vim
-OpenSSL> cms -verify -certfile swift_reifu.crt -CAfile cacert.crt -inform PEM -nosmimecap -nodetach -nocerts -noattr < reifu_info_sec.txt 
+OpenSSL> cms -verify -certfile signing_cert.pem -CAfile cacert.crt -inform PEM -nosmimecap -nodetach -nocerts -noattr < reifu_info_sec.txt 
 ```
-
-严格意义上应该按照如上的步骤进行处理，但实际上，签名的私钥和证书全部由CA生成。
-
-即用户不需要生成私钥。
-
-在openstack中对应为： 签名私钥signing_key.pem  和  签名证书signing_cert.pem
-
-具体命令如下：
-
-```vim
-OpenSSL> genrsa -out signing_key.pem 1024  
-OpenSSL> req -new -key signing_key.pem -out signing_req.csr   
-OpenSSL> x509 -days 3650 -req -CA cacert.crt -CAkey ca_private_key.pem -CAcreateserial -CAserial ca.srl -in signing_req.csr -out signing_cert.pem
-
-# 利用签名私钥和证书进行签名
-OpenSSL> cms -sign -signer signing_cert.pem -inkey signing_key.pem -outform PEM -nosmimecap -nodetach -nocerts -noattr < reifu_info.txt > reifu_info_sec.txt
-
-# 利用签名证书和CA证书进行验签
-OpenSSL> cms -verify -certfile signing_cert.pem -CAfile cacert.crt -inform PEM -nosmimecap -nodetach -nocerts -noattr < reifu_info_sec.txt   
-```
-
 
