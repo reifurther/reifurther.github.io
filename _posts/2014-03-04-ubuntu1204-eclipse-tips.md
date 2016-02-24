@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "ubuntu12.04下使用eclipse的一些技巧"
-categories: [ubuntu, eclipse]
+categories: [Linux]
 tags: [ubuntu, eclipse]
 description: 对于ubuntu12.04下使用eclipse的显示优化.
 ---

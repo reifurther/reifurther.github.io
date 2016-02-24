@@ -1,8 +1,8 @@
 ---
 layout: post
 title: "通过openssl理解网络信息安全"
-categories: [openSSL, RSA, CA, PKI]
-tags: [openSSL]
+categories: [Network]
+tags: [openssl,algorithm]
 description: 透过openssl学习加密算法、签名、证书等基本知识.
 ---
 

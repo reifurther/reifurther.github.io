@@ -2,7 +2,7 @@
 layout: post
 title: "understanding keystone authentication with openssl"
 categories: [openstack]
-tags: [openSSL,keystone]
+tags: [openssl,keystone]
 description: 理解keystone中的token，如何利用openssl实现token签名及验签
 ---
 

@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "更新托管在github上的个人blog"
-categories: [blog, github]
+categories: [others]
 tags: [blog, github]
 description: 快速更新个人blog.
 ---
