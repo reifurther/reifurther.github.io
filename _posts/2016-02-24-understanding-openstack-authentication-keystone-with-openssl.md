@@ -131,10 +131,24 @@ OpenSSL> cms -sign -signer swift_reifu.crt -inkey swift_reifu_key.pem -outform P
 OpenSSL> cms -verify -certfile swift_reifu.crt -CAfile cacert.crt -inform PEM -nosmimecap -nodetach -nocerts -noattr < reifu_info_sec.txt 
 ```
 
-严格意义上应该按照如上的步骤进行处理，但实际上，用户的私钥和用户证书全部由CA生成。
+严格意义上应该按照如上的步骤进行处理，但实际上，签名的私钥和证书全部由CA生成。
 
 即用户不需要生成私钥。
 
 在openstack中对应为： 签名私钥signing_key.pem  和  签名证书signing_cert.pem
+
+具体命令如下：
+
+```vim
+OpenSSL> genrsa -out signing_key.pem 1024  
+OpenSSL> req -new -key signing_key.pem -out signing_req.csr   
+OpenSSL> x509 -days 3650 -req -CA cacert.crt -CAkey ca_private_key.pem -CAcreateserial -CAserial ca.srl -in signing_req.csr -out signing_cert.pem
+
+# 利用签名私钥和证书进行签名
+OpenSSL> cms -sign -signer signing_cert.pem -inkey signing_key.pem -outform PEM -nosmimecap -nodetach -nocerts -noattr < reifu_info.txt > reifu_info_sec.txt
+
+# 利用签名证书和CA证书进行验签
+OpenSSL> cms -verify -certfile signing_cert.pem -CAfile cacert.crt -inform PEM -nosmimecap -nodetach -nocerts -noattr < reifu_info_sec.txt   
+```
 
 
