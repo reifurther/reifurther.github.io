@@ -3,7 +3,7 @@ layout: post
 title: "understanding keystone authentication with openssl"
 categories: [openstack]
 tags: [openSSL,keystone]
-description: 理解keystone中的token,及如何利用openssl实现的身份认证
+description: 理解keystone中的token，如何利用openssl实现token签名及验签
 ---
 
 
@@ -56,9 +56,9 @@ API endpoint只需要根据证书验签就可以了，可以做到离线认证�
 其基本操作如下：
 
 1. 每个用户的相关信息发送给keystone
-2. keystone的CA的私钥通过cms进行加密生成token
+2. keystone利用用户证书和用户私钥并通过cms进行签名生成token
 3. 用户请求服务时同时将token发送给swift之类的组件
-4. swift组件利用keystone签发的证书和CA的证书将token解密，得到具体信息
+4. swift组件利用keystone签发的证书和CA的证书将token进行验签，得到具体信息
 
 
 > **Tips:**
@@ -110,17 +110,17 @@ OpenSSL> genrsa -out swift_reifu_key.pem 1024
 * 利用私钥生成证书请求文件
 
 ```vim
-OpenSSL> req -new -key swift_reifu_key.pem -out wift_reifu_req.csr  
+OpenSSL> req -new -key swift_reifu_key.pem -out swift_reifu_req.csr  
 ```
 
 将证书文件发给CA，生成用户证书。拿到CA颁发的用户证书swfit_reifu.crt之后，
 
 * token加密
 
-利用**用户证书和私钥**将相关信息加密，得到所谓token加密文件。
+利用**用户证书和用户私钥**将相关信息加密，得到所谓token加密文件。
 
 ```vim
-OpenSSL> cms -sign -signer swfit_reifu.crt -inkey swift_reifu_key.pem -outform PEM -nosmimecap -nodetach -nocert -noattr < reifu_info.txt > reifu_info_sec.txt
+OpenSSL> cms -sign -signer swift_reifu.crt -inkey swift_reifu_key.pem -outform PEM -nosmimecap -nodetach -nocerts -noattr < reifu_info.txt > reifu_info_sec.txt
 ```
 
 * token解密
@@ -128,7 +128,7 @@ OpenSSL> cms -sign -signer swfit_reifu.crt -inkey swift_reifu_key.pem -outform P
 利用用户证书和CA证书 解密token文件，得到用户信息
 
 ```vim
-OpenSSL> cms -verify -certfile swfit_reifu.crt -CAfile cacert.crt -inform PEM -nosmimecap -nodetack -nocerts -noattr < reifu_info_sec.txt 
+OpenSSL> cms -verify -certfile swift_reifu.crt -CAfile cacert.crt -inform PEM -nosmimecap -nodetack -nocerts -noattr < reifu_info_sec.txt 
 ```
 
 
