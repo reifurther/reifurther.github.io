@@ -7,7 +7,7 @@ description: 理解keystone中的token，如何利用openssl实现token签名及
 ---
 
 
-## Kenstone中的Tokens
+## Keystone中的Tokens
 
 token即我们通常意义上所说的令牌，相对于每次请求都需要验证用户名/密码 更方便和更安全。
 
@@ -76,7 +76,7 @@ API endpoint只需要根据证书验签就可以了，可以做到离线认证�
 
 CA端很简单，生成私钥和自签证书即可，
 
-* 生成私钥
+* 生成CA的私钥
 
 ```vim
 $openssl genrsa -out ca_private_key.pem 1024  
@@ -93,7 +93,7 @@ $openssl req -new -x509 -days 3650 -key ca_private_key.pem -out cacert.crt
 * 根据用户reifu的申请文件，生成用户证书
 
 ```vim
-OpenSSL> x509 -md5 -days 3650 -req -CA cacert.crt -CAkey ca_private_key.pem -CAcreateserial -CAserial ca.srl -in swift_reifu_req.csr -out swift_reifu.crt
+OpenSSL> x509 -days 3650 -req -CA cacert.crt -CAkey ca_private_key.pem -CAcreateserial -CAserial ca.srl -in swift_reifu_req.csr -out swift_reifu.crt
 ```
 
 
@@ -117,7 +117,7 @@ OpenSSL> req -new -key swift_reifu_key.pem -out swift_reifu_req.csr
 
 * token加密
 
-利用**用户证书和用户私钥**将相关信息加密，得到所谓token加密文件。
+利用**用户证书和用户私钥**将原信息进行签名，得到签名后的token。
 
 ```vim
 OpenSSL> cms -sign -signer swift_reifu.crt -inkey swift_reifu_key.pem -outform PEM -nosmimecap -nodetach -nocerts -noattr < reifu_info.txt > reifu_info_sec.txt
@@ -125,10 +125,16 @@ OpenSSL> cms -sign -signer swift_reifu.crt -inkey swift_reifu_key.pem -outform P
 
 * token解密
 
-利用用户证书和CA证书 解密token文件，得到用户信息
+利用**用户证书和CA证书**进行验签，若验签通过，则返回原信息
 
 ```vim
-OpenSSL> cms -verify -certfile swift_reifu.crt -CAfile cacert.crt -inform PEM -nosmimecap -nodetack -nocerts -noattr < reifu_info_sec.txt 
+OpenSSL> cms -verify -certfile swift_reifu.crt -CAfile cacert.crt -inform PEM -nosmimecap -nodetach -nocerts -noattr < reifu_info_sec.txt 
 ```
+
+严格意义上应该按照如上的步骤进行处理，但实际上，用户的私钥和用户证书全部由CA生成。
+
+即用户不需要生成私钥。
+
+在openstack中对应为： 签名私钥signing_key.pem  和  签名证书signing_cert.pem
 
 
