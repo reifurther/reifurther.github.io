@@ -61,7 +61,7 @@ keystone的Libery版API [这里](http://172.17.254.218/openstack-docs/liberty/ke
 * Policy
 
 各概念之间的关系如下：
-![relationship](../assets/media/identity_relationship.jpg)
+![relationship](/assets/media/identity_relationship.jpg)
 
 
 
