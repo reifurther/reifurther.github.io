@@ -38,32 +38,60 @@ keystone实现了2个API版本, [Identity API v2.0](http://specs.openstack.org/o
 * API v2.0 只对 Tokens、Users、Tenants 操作。
 * API v3 引入Domains、Projects、Groups、Policy等操作。
 
+>  **tips:**
+> 
+> 在API v2.0中，所有的操作其实在一个 'default' domain里。当创建一个user同时也创建了一个default domain。
+> 
+
 keystone的Libery版API [这里](http://172.17.254.218/openstack-docs/liberty/keystone/http-api.html) 也说明了 v2.0 和 v3 的一些关键不同点。 
 
-本篇只重点介绍 API v3 版。
+### API v2.0
+
+to be continue ....
 
 ### API v3
 
 [API v3](http://specs.openstack.org/openstack/keystone-specs/api/v3/identity-api-v3.html) 官方手册详细说明了其定义、资源、核心方法等。
 
-一些重要概念：
+**一些重要概念：**
 
-* Users: /v3/users 
-* Groups: /v3/groups
-* Credentials: /v3/credentials
-* Projects: /v3/projects
-* Domains: /v3/domains
-* Roles: /v3/roles/
-* Regions: /v3/regions
-* Services: /v3/services
-* Endpoints: /v3/endpoints
-* Tokens
-* Policy
+#### tokens
+
+在前一篇文章中已细述。
+
+#### credentials
+
+用户凭据。证明用户的信息，API中可进行CRUD，有三种形式存在：
+
+* user/password
+* user/api key
+* token
+
+#### domains, projects, groups, users, roles
+
+* domains 包含 users, groups, projects
+* projects 包含一个或多个 users
+* groups 是user的集合, 与 project 或 domains 是 多对多 的关系
+* users 用户, 与 project 或 domains 是 多对多 的关系
+* roles 角色, 描述 user-project 对应关系
+
+#### Service catalog and endpoints
+
+ 这里的Services就是指服务目录，指具体的Openstack服务，比如nova服务、glance服务等等。
+ 
+ 它是一个Web服务，可以通过URL 或是 endpoint访问。
+ 
+ endpoint可分为三类：
+ 
+ * adminurl : 给 admin用户作管理用
+ * internalurl : 给 openstack 内部组件间的服务
+ * publicurl : 给其它用户可以访问的地址
+ 
 
 各概念之间的关系如下：
 ![relationship](/assets/media/identity_relationship.jpg)
 
+一些 v3 API 的例子，
 
-
-```
+[http://172.17.254.218/openstack-docs/liberty/keystone/api_curl_examples.html](http://172.17.254.218/openstack-docs/liberty/keystone/api_curl_examples.html) 
 
