@@ -122,7 +122,7 @@ OpenSSL> req -new -key signing_key.pem -out signing_req.csr
 利用**用户证书和用户私钥**将原信息进行签名，得到签名后的token。
 
 ```vim
-OpenSSL> cms -sign -signer signing_cert.pem -inkey signing_key.pem -outform PEM -nosmimecap -nodetach -nocerts -noattr < reifu_info.txt > reifu_info_sec.txt
+OpenSSL> cms -sign -signer signing_cert.pem -inkey signing_key.pem -outform PEM -nosmimecap -nodetach -nocerts -noattr < token_data.txt > token_id.txt
 ```
 
 * 验证签名
@@ -130,6 +130,6 @@ OpenSSL> cms -sign -signer signing_cert.pem -inkey signing_key.pem -outform PEM 
 利用**用户证书和CA证书**进行验签，若验签通过，则返回原信息
 
 ```vim
-OpenSSL> cms -verify -certfile signing_cert.pem -CAfile cacert.crt -inform PEM -nosmimecap -nodetach -nocerts -noattr < reifu_info_sec.txt 
+OpenSSL> cms -verify -certfile signing_cert.pem -CAfile cacert.crt -inform PEM -nosmimecap -nodetach -nocerts -noattr < token_id.txt 
 ```
 
