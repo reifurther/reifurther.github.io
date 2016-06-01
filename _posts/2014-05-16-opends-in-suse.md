@@ -1,8 +1,8 @@
 ---
 layout: post
 title: "suse下安装openDS遇到的问题"
-categories: [LDAP]
-tags: [suse, openDS]
+categories: [ldap]
+tags: [suse, opends]
 description: suse下安装openDS2.2遇到如下问题，供参考.
 ---
 

@@ -1,8 +1,8 @@
 ---
 layout: post
 title: "How to reset the cn=Directory Manager's password"
-categories: [Ldap]
-tags: [upds, openjs]
+categories: [ldap]
+tags: [opendj, opends]
 description: 在OpenDJ、OpenDS或OUD中有时需要修改管理员密码，或者忘记需要重置。
 ---
 
