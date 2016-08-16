@@ -3,7 +3,7 @@ layout: post
 title: "how to configure haproxy"
 categories: [paas]
 tags: [haproxy]
-description: 介绍什么是haproxy,如何使用及配置示例
+description: 介绍什么是haproxy，如何使用及配置示例
 ---
 
 
@@ -30,30 +30,31 @@ $yum install haproxy -y
    ***global***: 全局配置参数，参数是进程级别的，通常这些参数是与操作系统有关。
         
    ***defaults***: 配置默认参数，这里的默认参数是相对于后面的frontend 、backend、listen组件而言。
+   
+   ***listen***: 用于建立虚拟主机，是frontend和backend的结合体，可直接取代frontend和backend。
         
    ***frontend***: 接收客户端发起请求，建立socket监听。可根据规则直接指定具体的后端服务器。
    
    ***backend***: 后端服务器集群配置，一个backend对应一个或者多个后端服务器。
    
-   ***listen***: 用于建立虚拟主机，是frontend和backend的结合体，可直接取代frontend和backend
+  
    
 ### global
 
+全局参数配置。
 
 ```vim
-global        # 对全局参数的说明
+global 
+        log         127.0.0.1 local2     # 日志配置，需要借助rsyslog来进行配置，默认等级为info
+        chroot      /var/lib/haproxy     # 改变当前工作目录，基于安全性的考虑
+        pidfile     /var/run/haproxy.pid # 当前进程pid文件
+        maxconn     4000                 # 当前进程最大的连接数，参考Tips。
+        user        haproxy              # 启动服务所属用户
+        group       haproxy              # 启动服务所属组
+        daemon                           # 开启守护进程运行模式
 
-            log         127.0.0.1 local2    # 全局的日志配置，使用log关键字，此日志需要借助rsyslog来进行配置，默认等级为info
-
-            chroot      /var/lib/haproxy       # 改变当前工作目录，基于安全性的考虑
-            pidfile     /var/run/haproxy.pid  # 当前进程pid文件
-            maxconn     4000                # 当前进程最大的连接数，很重要的一个参数，后面有详细的讲解。
-            user        haproxy             # 启动服务所属用户
-            group       haproxy             # 启动服务所属组
-            daemon                            # 开启守护进程运行模式
-
-            # turn on stats unix socket
-            stats socket /var/lib/haproxy/stats        # haproxy socket文件
+        # turn on stats unix socket
+        stats socket /var/lib/haproxy/stats        # haproxy socket文件
 
 ```
 
@@ -67,25 +68,26 @@ global        # 对全局参数的说明
 
 ### defaults
 
+默认参数配置。
 
 ```vim
-defaults    # 开始定义 defaults段
-            mode                    http          # haproxy支持两种工作模式tcp、http、health，默认是http
-            log                     global        # 应用全局配置的日志
-            option                  httplog        # 启用日志记录HTTP请求
-            option                  dontlognull # 启用该项，日志中将不会记录关于对后端服务器的检测情况。
-            option 					   http-server-close            # 每次请求完毕后主动关闭http通道
-            option 					   forwardfor except 127.0.0.0/8    # 这里是转发客户端ip地址至后端服务器上。根据测试，无需修改此项，在后端服务器上设置{X-Forwarded-For}i就能实现。
-            option                  redispatch    # 此项是对backend server内容中的serverID作用的
-            retries                 3             # 定义尝试连接后端服务器的失败次数，尝试3次失败后，后端该服务器将标记为不可用状态
-            timeout http-request    10s            # http请求超时时间
-            timeout queue           1m            # 一个请求在队列里的超时时间
-            timeout connect         10s            # 连接超时时间
-            timeout client          1m            # 客户端超时时间
-            timeout server          1m            # 服务端超时时间
-            timeout http-keep-alive 10s            # http keepalived保持时间
-            timeout check           10s            # 检测超时时间
-            maxconn                 3000        # 每个frontend定义的最大连接数
+defaults   
+        mode                    http          # 默认支持的代理模式
+        log                     global        # 应用全局配置的日志
+        option                  httplog       # 启用日志记录HTTP请求
+        option                  dontlognull  
+        option                  http-server-close
+        option                  forwardfor except 127.0.0.0/8    
+        option                  redispatch    
+        retries                 3             # 定义尝试连接后端服务器的失败次数
+        timeout http-request    10s           # http请求超时时间
+        timeout queue           1m            # 一个请求在队列里的超时时间
+        timeout connect         10s           # 连接超时时间
+        timeout client          1m            # 客户端超时时间
+        timeout server          1m            # 服务端超时时间
+        timeout http-keep-alive 10s           # http keepalived保持时间
+        timeout check           10s           # 检测超时时间
+        maxconn                 3000          # 每个frontend定义的最大连接数
 
 ```
 
@@ -94,11 +96,19 @@ defaults    # 开始定义 defaults段
 > 
 > mode: 工作模式, 后面会有详细介绍
 > 
-> timeout http-keep-alive: http keepalived 超时时间，具体需要测试，一般保持默认
+> donttlognull: 启用该项后日志中将不会记录关于对后端服务器的检测情况。
+> 
+> http-server-close：每次请求完毕后主动关闭http通道
+> 
+> timeout http-keep-alive: http keepalived超时时间，具体需要测试，一般保持默认
 > 
 > maxconn：defaults中出现的maxconn值是为frontend做限制的。后面有详细的讲解
 > 
-> redispatch: 是对backend server内容中的serverID作用的，当backend中定义的server启用了cookie时，haproxy会将请求到的后端服务器的serverID插入到cookie中，以保证session持久性，如果此时后端服务器宕机，但是客户端的cookie是不会刷新的，如果开启了cookie，将会使客户端请求强制定向到另一台后端server上，保证了服务的正常运行。
+> forwardfor：这里是转发客户端ip地址至后端服务器上。根据测试，无需修改此项，在后端服务器上设置{X-Forwarded-For}i就能实现。
+> 
+> retries：定义尝试连接后端服务器的失败次数，尝试3次失败后，后端该服务器将标记为不可用状态
+> 
+> redispatch：是对backend server内容中的serverID作用，当backend中定义的server启用了cookie时，haproxy会将请求到的后端服务器的serverID插入到cookie中，以保证session持久性，如果此时后端服务器宕机，但是客户端的cookie是不会刷新的，如果开启了cookie，将会使客户端请求强制定向到另一台后端server上，保证了服务的正常运行。
 > 
 > 
 
@@ -107,15 +117,15 @@ defaults    # 开始定义 defaults段
 
 
 ```vim
-listen stats        # 申明定义一个listen段，命名为stats
-            bind *:1080        # bind设置socket 格式：ip:port
-            mode http         # 指定工作模式
-            stats refresh 30     # 刷新时间，这里30秒刷新一次
-            stats enable        # 启用haproxy监控状态
-            stats hide-version    # 隐藏haproxy的版本号
-            stats uri /haproxy?wsd    # 设置haproxy监控页的uri，可任意设置
-            stats auth admin:admin    # 验证用户名密码
-            stats admin if TRUE        # 此项是实现haproxy监控页的管理功能的。
+listen stats                   # 申明定义一个listen段，命名为stats
+        bind *:1080            # bind设置socket 格式：ip:port
+        mode http              # 指定工作模式
+        stats refresh 30       # 刷新时间，这里30秒刷新一次
+        stats enable           # 启用haproxy监控状态
+        stats hide-version     # 隐藏haproxy的版本号
+        stats uri /haproxy?wsd # 设置haproxy监控页的uri，可任意设置
+        stats auth admin:admin # 验证用户名密码
+        stats admin if TRUE    # 此项是实现haproxy监控页的管理功能的。
 
 ```
 
@@ -125,17 +135,16 @@ listen stats        # 申明定义一个listen段，命名为stats
 
 ```vim
 
-frontend www.test.com    # 定一个frontend 段，命名为www.test.com 命名随意。
-            mode http             # 定义工作模式
-            bind *:8000         # 定义监听地址和端口 格式：ip:port
-            option forwardfor   # 将客户端ip转发到后端真实服务器
-            use_backend web check    # 使用web后端服务器群组，并进行健康检查
-
-backend web             # 定义一个backend 段，命名为web，该命名在frontend中 use_backend使用
-            balance roundrobin    # 主机集群的调度算法，此参数很重要，下面详细解释。
-            # server 定义中可以使用的参数：{weight | check | inter | rise | fall | maxconn }
-            server web1 127.0.0.1:8080 check    # 具体定义的后端主机 格式：server 主机名 ip:port check
-            server web2 127.0.0.1:80 check
+frontend www.test.com        # 定义一个frontend 段，命名随意。
+       mode http             # 定义工作模式
+       bind *:8000           # 定义监听地址和端口 格式：ip:port
+       option forwardfor     # 将客户端ip转发到后端真实服务器
+       use_backend web check # 使用web后端服务器群组，并进行健康检查
+backend web                  # 该命名在frontend中 use_backend使用
+       balance roundrobin # 主机集群的调度算法，此参数很重要，下面详细解释。
+       # server 定义中可以使用的参数：{weight|check|inter|rise|fall|maxconn }
+       server web1 127.0.0.1:8080 check 
+       server web2 127.0.0.1:80 check
 
 ```
 
