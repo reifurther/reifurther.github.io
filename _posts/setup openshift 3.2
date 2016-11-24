@@ -1,0 +1,38 @@
+### setup openshift 3.2
+
+
+#### setup
+
+1. hostname , dns
+2. repo
+3. registry
+4. setup docker and config docker (block and insecurity)
+
+
+#### running config
+
+* Ref: https://github.com/openshift/training/blob/n
+
+* Ref: http://d7.caishu.name/console/#/log_search (test/abcdef)
+
+1. modify master-config.yaml (region='primary', etc)
+2. retart 
+3. setup httpd-utils
+4. htppasswd (create new user)
+5. systemctl restart atomic-openshift-master.service
+
+
+#### project config
+
+1. delete template and re_create
+
+
+
+
+#### Ref
+
+template: describe all process (include ci, cd, deploy topolgy, etc)
+image stream: extends of docker image with image lifecycle
+s2i : extends with docker build
+
+
